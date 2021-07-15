@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Course Info",
+  "version": "0.1",
+  "permissions": [
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://courses.students.ubc.ca/*"
+      ],
+      "js": ["content.js,background.js"]
+    }
+  ]
+}
+
