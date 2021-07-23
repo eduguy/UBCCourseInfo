@@ -4,9 +4,9 @@
   "version": "0.1",
   "permissions": [
     "tabs",
-    "https://ubcgrades.com/"
+    "https://*/",
+    "http://*/"
   ],
-
   "browser_action": {},
   "content_scripts": [
     {
@@ -19,8 +19,5 @@
   "background": {
     "scripts": ["background.js"]
   }
-
-
-
 }
 
