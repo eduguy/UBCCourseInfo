@@ -7,8 +7,17 @@
     "https://*/",
     "http://*/"
   ],
-  "browser_action": {},
+  "browser_action": {
+    "default_title":"Course Info"
+  },
   "content_scripts": [
+    {
+      "matches": [
+        "*://courses.students.ubc.ca/*"
+      ],
+      "js": ["jquery.js"]
+
+    },
     {
       "matches": [
         "*://courses.students.ubc.ca/*"

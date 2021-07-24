@@ -6,6 +6,8 @@ chrome.tabs.onUpdated.addListener(function(tab) {
     });
   });
 
+
+
   chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if (request.action == "xhttp") {
         var xhttp = new XMLHttpRequest();
@@ -21,3 +23,10 @@ chrome.tabs.onUpdated.addListener(function(tab) {
     }
 }
   );
+
+  chrome.browserAction.onClicked.addListener(function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        var activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, {"message": "Popup Opened"});
+      });
+});
