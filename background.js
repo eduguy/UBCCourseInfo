@@ -13,15 +13,11 @@ chrome.tabs.onUpdated.addListener(function(tab) {
             callback(xhttp.responseText);
         };
         xhttp.onerror = function() {
-            // Do whatever you want on error. Don't forget to invoke the
-            // callback to clean up the communication port.
-            callback();
+            callback('ERROR');
         };
         xhttp.open('GET', request.url);
-        // if (method == 'POST') {
-            // xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        // }
         xhttp.send();
-        return true; // prevents the callback from being called too early on return
+        return true; 
     }
-});
+}
+  );

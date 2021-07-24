@@ -1,17 +1,3 @@
-var xhr = new XMLHttpRequest();
-var JSONRequest;
-xhr.onload = function() {
-    var json = xhr.responseText;                         // Response
-    json = json.replace(/^[^(]*\(([\S\s]+)\);?$/, '$1'); // Turn JSONP in JSON
-    json = JSON.parse(json);                             // Parse JSON\
-    alert(JSON);
-    // ... enjoy your parsed json...
-};
-// Example:
-// data = 'Example: appended to the query string..';
-// xhr.open('GET', 'http://domain/getjson?data=' + encodeURIComponent(data));
-// xhr.send();
-
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if( request.message === "Navigated" ) {
@@ -29,12 +15,27 @@ chrome.runtime.onMessage.addListener(
             url: 'https://ubcgrades.com/api' + JSONRequest
             // , data: JSONRequest
         }, function(responseText) {
-          // console.warn(xhr.responseText)
-            // alert('Got the response text');
-            // responseText = responseText.replace(/^[^(]*\(([\S\s]+)\);?$/, '$1'); // Turn JSONP in JSON
-            // responseText = JSON.parse(responseText);                             // Parse JSON\
-            // console.log(responseText);
-            /*Callback function to deal with the response*/
+          if (responseText != 'ERROR') {
+          var parsedArr = JSON.parse(responseText);
+          var result;
+          for (var i = 0; i<parsedArr.length; i++){
+            if (parsedArr[i].educators == "") {
+              //This will be the one that is an average
+              result = parsedArr[i].average;
+              result = Math.round(result * 10) / 10;
+              break;
+            }
+          }
+
+          var div = document.createElement("div");
+          div.id = 'CourseInfoDivID';
+          div.setAttribute("style","font-family: Helvetica");
+          div.setAttribute("style","font-size: 30px");
+          div.textContent = "The course average for 2019W was: " + result;
+          var theElement = document.getElementById('cdfText');
+          theElement.appendChild(div);
+
+        }
         });
           return true;
 
