@@ -15,18 +15,24 @@ chrome.tabs.onUpdated.addListener(function(tab) {
             callback(xhttp.responseText);
         };
         xhttp.onerror = function() {
-            callback('ERROR');
+            //callback('ERROR');
         };
         xhttp.open('GET', request.url);
         xhttp.send();
         return true; 
     }
 }
-  );
-
-  chrome.browserAction.onClicked.addListener(function() {
+);
+chrome.pageAction.onClicked.addListener(function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var activeTab = tabs[0];
         chrome.tabs.sendMessage(activeTab.id, {"message": "Popup Opened"});
       });
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.type === 'showPageAction') {
+      chrome.pageAction.show(sender.tab.id);
+  }
+});
+

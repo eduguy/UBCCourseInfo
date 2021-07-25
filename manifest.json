@@ -7,8 +7,9 @@
     "https://*/",
     "http://*/"
   ],
-  "browser_action": {
-    "default_title":"Course Info"
+  "page_action": {
+    "default_title":"Course Info",
+    "default_popup":"popup.html"
   },
   "content_scripts": [
     {
@@ -23,6 +24,12 @@
         "*://courses.students.ubc.ca/*"
       ],
       "js": ["content.js"]
+    },
+    {
+      "matches": [
+        "*://courses.students.ubc.ca/*"
+      ],
+      "js": ["popup.js"]
     }
   ],
   "background": {
