@@ -8,32 +8,30 @@
     "http://*/"
   ],
   "page_action": {
-    "default_title":"Course Info",
-    "default_popup":"popup.html"
+    "default_title": "Course Info",
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
       "matches": [
         "*://courses.students.ubc.ca/*"
       ],
-      "js": ["jquery.js"]
-
+      "js": [
+        "jquery.js"
+      ]
     },
     {
       "matches": [
         "*://courses.students.ubc.ca/*"
       ],
-      "js": ["content.js"]
-    },
-    {
-      "matches": [
-        "*://courses.students.ubc.ca/*"
-      ],
-      "js": ["popup.js"]
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   }
 }
-
