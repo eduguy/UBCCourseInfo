@@ -1,7 +1,7 @@
 chrome.tabs.onUpdated.addListener(function (tab) {
   // Send a message to the active tab
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    var activeTab = tabs[0];
+    let activeTab = tabs[0];
     if (activeTab) {
       chrome.tabs.sendMessage(activeTab.id, { "message": "Navigated" });
     }
@@ -10,12 +10,15 @@ chrome.tabs.onUpdated.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   if (request.action == "xhttp") {
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
-      callback(xhttp.responseText);
+      if (xhttp.status != 404) {
+        callback(xhttp.responseText);
+      } else {
+        callback('ERROR');
+      }
     };
     xhttp.onerror = function () {
-      //callback('ERROR');
     };
     xhttp.open('GET', request.url);
     xhttp.send();
@@ -25,7 +28,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 );
 chrome.pageAction.onClicked.addListener(function () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    var activeTab = tabs[0];
+    let activeTab = tabs[0];
     chrome.tabs.sendMessage(activeTab.id, { "message": "Popup Opened" });
   });
 });
