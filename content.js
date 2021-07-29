@@ -1,6 +1,6 @@
 var result;
 
-function updateInfo(year, isUpdateCall) {
+function updateCourseInfo(year, isUpdateCall) {
   let urlParams = new URLSearchParams(window.location.href);
   let data = urlParams.get("dept") + "/" + urlParams.get("course");
   JSONRequest = "/v2/grades/UBCV/" + year + "/" + encodeURIComponent(data);
@@ -12,7 +12,7 @@ function updateInfo(year, isUpdateCall) {
       let parsedArr = JSON.parse(responseText);
 
       for (let i = 0; i < parsedArr.length; i++) {
-        if (parsedArr[i].educators == "") {
+        if (parsedArr[i].section === "OVERALL") {
           result = parsedArr[i].average;
           result = Math.round(result * 10) / 10;
           break;
@@ -45,33 +45,10 @@ chrome.runtime.onMessage.addListener(
       if (curLocation.includes("dept=") && curLocation.includes("course=")) {
 
         //Default to 2020W since at this time that is the latest
-        updateInfo('2020W');
+        updateCourseInfo('2020W');
       } else if (curLocation.includes("dept=")) {
-        $('#mainTable').find('a').each(function () {
-          let link = ($(this).attr('href'));
-          let url = new URLSearchParams(link);
-          let data = url.get("dept") + "/" + url.get("course");
-          let JSONRequest = "/v2/grades/UBCV/2020W/" + encodeURIComponent(data);
 
-          chrome.runtime.sendMessage({
-            action: 'xhttp',
-            url: 'https://ubcgrades.com/api' + JSONRequest
-          }, function (responseText) {
-            if (responseText !== 'ERROR') {
-              let parsedArr = JSON.parse(responseText);
-        
-              for (let i = 0; i < parsedArr.length; i++) {
-                if (parsedArr[i].educators == "") {
-                  result = parsedArr[i].average;
-                  result = Math.round(result * 10) / 10;
-                  break;
-                }
-              }
-            }
-            
-            console.log(result);
-          });
-        })
+        updateDepartmentInfo();
       }
     }
     return true;
@@ -81,6 +58,45 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.message === "Year Value Changed") {
       let newVal = request.value;
-      updateInfo(newVal, true);
+      updateCourseInfo(newVal, true);
     }
   });
+
+function updateDepartmentInfo() {
+  let tableRows = document.getElementById('mainTable').rows;
+  let count = 1;
+  $('#mainTable').find('a').each(function () {
+    let link = ($(this).attr('href'));
+    let url = new URLSearchParams(link);
+    let data = url.get("dept") + "/" + url.get("course");
+    let JSONRequest = "/v2/grades/UBCV/2020W/" + encodeURIComponent(data);
+
+    chrome.runtime.sendMessage({
+      action: 'xhttp',
+      url: 'https://ubcgrades.com/api' + JSONRequest
+    }, function (responseText) {
+      if (responseText !== 'ERROR') {
+        let parsedArr = JSON.parse(responseText);
+        for (let i = 0; i < parsedArr.length; i++) {
+          if (parsedArr[i].section === "OVERALL") {
+            result = parsedArr[i].average;
+            result = Math.round(result * 10) / 10;
+            break;
+          }
+        }
+
+        let currentRow = tableRows[count];
+        var x = currentRow.insertCell(2);
+        x.innerHTML = "The average grade for 2020W was: " + result + "%.";
+
+      }
+      else {
+        tableRows[count].insertCell(2).innerHTML = ("The average grade was not available.");
+      }
+      count++;
+
+    });
+
+  });
+}
+
