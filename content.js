@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener(
         updateCourseInfo('2020W');
       } else if (curLocation.includes("dept=")) {
 
-        updateDepartmentInfo();
+        updateDepartmentInfo('2020W');
       }
     }
     return true;
@@ -58,18 +58,29 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.message === "Year Value Changed") {
       let newVal = request.value;
-      updateCourseInfo(newVal, true);
+      let curLocation = window.location.href;
+      if (curLocation.includes("dept=") && curLocation.includes("course=")) {
+        updateCourseInfo(newVal, true);
+      } else if (curLocation.includes("dept=")) {
+        updateDepartmentInfo(newVal, true);
+      }
     }
   });
 
-function updateDepartmentInfo() {
+function updateDepartmentInfo(year, isUpdateCall) {
   let tableRows = document.getElementById('mainTable').rows;
+  if (tableRows[0].cells.length > 2 && !isUpdateCall) {
+    return;
+  }
+  if (!isUpdateCall) {
+    tableRows[0].insertCell(2).innerHTML = "<b> Average Grade </b>";
+  }
   let count = 1;
   $('#mainTable').find('a').each(function () {
     let link = ($(this).attr('href'));
     let url = new URLSearchParams(link);
     let data = url.get("dept") + "/" + url.get("course");
-    let JSONRequest = "/v2/grades/UBCV/2020W/" + encodeURIComponent(data);
+    let JSONRequest = "/v2/grades/UBCV/" + year + "/" + encodeURIComponent(data);
 
     chrome.runtime.sendMessage({
       action: 'xhttp',
@@ -86,8 +97,13 @@ function updateDepartmentInfo() {
         }
 
         let currentRow = tableRows[count];
-        var x = currentRow.insertCell(2);
-        x.innerHTML = "The average grade for 2020W was: " + result + "%.";
+        if (isUpdateCall) {
+          currentRow.cells[2].innerHTML = "The average grade for " + year + " was: " + result + "%.";
+        }
+        else {
+          var x = currentRow.insertCell(2);
+          x.innerHTML = "The average grade for " + year + " was: " + result + "%.";
+        }
 
       }
       else {
