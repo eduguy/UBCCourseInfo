@@ -107,7 +107,13 @@ function updateDepartmentInfo(year, isUpdateCall) {
 
       }
       else {
-        tableRows[count].insertCell(2).innerHTML = ("The average grade was not available.");
+        if (!isUpdateCall) {
+          tableRows[count].insertCell(2).innerHTML = ("The average grade was not available.");
+        } else {
+          let currentRow = tableRows[count];
+          currentRow.cells[2].innerHTML = "The average grade was not available.";
+        }
+
       }
       count++;
 
