@@ -33,7 +33,6 @@ function updateCourseInfo(year, isUpdateCall) {
       document.getElementById('CourseInfoDivID').innerHTML = "This information is from UBCGrades API and the UBC Course Info Extension.<br><br>The course average for " + year + ((result) ? ' was ' + result + '%' : ' is not available') + ".";
     }
 
-
   }
   )
 }
@@ -43,11 +42,13 @@ chrome.runtime.onMessage.addListener(
       chrome.runtime.sendMessage({ type: 'showPageAction' });
       let curLocation = window.location.href;
       if (curLocation.includes("dept=") && curLocation.includes("course=")) {
-
         //Default to 2020W since at this time that is the latest
         updateCourseInfo('2020W');
+        if (curLocation.includes("section")) {
+          //That means we can also get the professor rating
+          updateInstructorInfo();
+        }
       } else if (curLocation.includes("dept=")) {
-
         updateDepartmentInfo('2020W');
       }
     }
@@ -122,3 +123,30 @@ function updateDepartmentInfo(year, isUpdateCall) {
   });
 }
 
+function updateInstructorInfo() {
+  let baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
+  //Find element that is the link to professor. Copy the name and use the search query. Scrape rating if possible.
+  let list = document.getElementsByClassName('table');
+  let theTable = list[2]; //hard coding is not good...
+  let profLink = theTable.querySelectorAll('a');
+  if (profLink.length > 0) {
+    if (document.getElementById('RateMyProfLink')) {
+      newAElem.remove();
+    }
+    let name = profLink[0].innerHTML;
+    let lastName = name.substr(0, name.indexOf(','));
+    let firstName = name.substr(name.indexOf(',') + 2, name.length);
+    let search = baseSearchQuery.replace('FIRSTNAME', firstName).replace('LASTNAME', lastName);
+    console.log(search);
+    let newAElem = document.createElement("a");
+    newAElem.id = 'RateMyProfLink';
+    newAElem.href = search;
+    newAElem.target = '_blank';
+    newAElem.innerHTML = '<b>Search on Rate My Professors!</b>';
+    newAElem.style.paddingLeft = '65px';
+    $(newAElem).insertAfter(profLink);
+  }
+
+  //No professor yet so do nothing
+
+}
