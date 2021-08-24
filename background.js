@@ -26,6 +26,25 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   }
 }
 );
+// chrome.runtime.onMessage.addListener(function (request, sender, callback) {
+//   if (request.action == 'getRateMyProf') {
+//     let xhttp = new XMLHttpRequest();
+//     xhttp.onload = function () {
+//       if (xhttp.status != 404) {
+//         callback(xhttp.responseText);
+//       } else {
+//         callback('ERROR');
+//       }
+//     };
+//     xhttp.onerror = function () {
+//     };
+//     xhttp.open('GET', request.url);
+//     xhttp.send();
+//     return true;
+
+//   }
+// });
+
 chrome.pageAction.onClicked.addListener(function () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     let activeTab = tabs[0];
@@ -45,3 +64,4 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 //     updateInfo(newVal);
 //   }
 // });
+

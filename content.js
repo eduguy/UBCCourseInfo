@@ -83,48 +83,50 @@ function updateDepartmentInfo(year, isUpdateCall) {
     let data = url.get("dept") + "/" + url.get("course");
     let JSONRequest = "/v2/grades/UBCV/" + year + "/" + encodeURIComponent(data);
 
-    chrome.runtime.sendMessage({
-      action: 'xhttp',
-      url: 'https://ubcgrades.com/api' + JSONRequest
-    }, function (responseText) {
-      if (responseText !== 'ERROR') {
-        let parsedArr = JSON.parse(responseText);
-        for (let i = 0; i < parsedArr.length; i++) {
-          if (parsedArr[i].section === "OVERALL") {
-            result = parsedArr[i].average;
-            result = Math.round(result * 10) / 10;
-            break;
-          }
-        }
-
-        let currentRow = tableRows[count];
-        if (isUpdateCall) {
-          currentRow.cells[2].innerHTML = "The average grade for " + year + " was: " + result + "%.";
-        }
-        else {
-          var x = currentRow.insertCell(2);
-          x.innerHTML = "The average grade for " + year + " was: " + result + "%.";
-        }
-
-      }
-      else {
-        if (!isUpdateCall) {
-          tableRows[count].insertCell(2).innerHTML = ("The average grade was not available.");
-        } else {
-          let currentRow = tableRows[count];
-          currentRow.cells[2].innerHTML = "The average grade was not available.";
-        }
-
-      }
-      count++;
-
-    });
+    updateTable(JSONRequest, tableRows, count, isUpdateCall, year);
+    count++;
 
   });
 }
 
+function updateTable(JSONRequest, tableRows, count, isUpdateCall, year) {
+  chrome.runtime.sendMessage({
+    action: 'xhttp',
+    url: 'https://ubcgrades.com/api' + JSONRequest
+  }, function (responseText) {
+    if (responseText !== 'ERROR') {
+      let parsedArr = JSON.parse(responseText);
+      for (let i = 0; i < parsedArr.length; i++) {
+        if (parsedArr[i].section === "OVERALL") {
+          result = parsedArr[i].average;
+          result = Math.round(result * 10) / 10;
+          break;
+        }
+      }
+      let currentRow = tableRows[count];
+      if (isUpdateCall) {
+        currentRow.cells[2].innerHTML = "The average grade for " + year + " was: " + result + "%.";
+      }
+      else {
+        var x = currentRow.insertCell(2);
+        x.innerHTML = "The average grade for " + year + " was: " + result + "%.";
+      }
+    }
+    else {
+      if (!isUpdateCall) {
+        tableRows[count].insertCell(2).innerHTML = ("The average grade was not available.");
+      } else {
+        let currentRow = tableRows[count];
+        currentRow.cells[2].innerHTML = "The average grade was not available.";
+      }
+    }
+    count++;
+  });
+
+}
+const baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
+
 function updateInstructorInfo() {
-  let baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
   //Find element that is the link to professor. Copy the name and use the search query. Scrape rating if possible.
   let list = document.getElementsByClassName('table');
   let theTable = list[2]; //hard coding is not good...
@@ -137,7 +139,6 @@ function updateInstructorInfo() {
     let lastName = name.substr(0, name.indexOf(','));
     let firstName = name.substr(name.indexOf(',') + 2, name.length);
     let search = baseSearchQuery.replace('FIRSTNAME', firstName).replace('LASTNAME', lastName);
-    console.log(search);
     let newAElem = document.createElement("a");
     newAElem.id = 'RateMyProfLink';
     newAElem.href = search;
@@ -145,8 +146,18 @@ function updateInstructorInfo() {
     newAElem.innerHTML = '<b>Search on Rate My Professors!</b>';
     newAElem.style.paddingLeft = '65px';
     $(newAElem).insertAfter(profLink);
+    // chrome.runtime.sendMessage({
+    //   action: 'getRateMyProf',
+    //   url: search
+    // }, function (responseText) {
+    //   //Do something with the resposne
+    //   // console.log(responseText);
+    //   // var docToParse = new DOMParser().parseFromString(responseText, "text/xml");
+    //   // console.log(docToParse);
+    // });
   }
 
   //No professor yet so do nothing
 
 }
+
