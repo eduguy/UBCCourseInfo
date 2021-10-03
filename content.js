@@ -24,13 +24,13 @@ function updateCourseInfo(year, isUpdateCall) {
       div.id = 'CourseInfoDivID';
       div.setAttribute("style", "font-family: Helvetica");
       div.setAttribute("style", "font-weight: bold");
-      div.innerHTML = "This information is from UBCGrades API and the UBC Course Info Extension.<br><br>The course average for " + year + ((result && responseText !== 'ERROR') ? ' was ' + result + '%' : ' is not available') + ".";
+      div.innerHTML = "The course average for " + year + ((result && responseText !== 'ERROR') ? ' was ' + result + '%' : ' is not available') + ".<br><br>" + "This information is from UBCGrades API and the UBC Course Info Extension.";
       let elemToAppendTo = document.getElementById('cdfText');
       $(div).insertAfter(elemToAppendTo);
       document.getElementById('CourseInfoDivID').className = "alert alert-info";
     }
     else if (isUpdateCall) {
-      document.getElementById('CourseInfoDivID').innerHTML = "This information is from UBCGrades API and the UBC Course Info Extension.<br><br>The course average for " + year + ((result) ? ' was ' + result + '%' : ' is not available') + ".";
+      document.getElementById('CourseInfoDivID').innerHTML = "The course average for " + year + ((result) ? ' was ' + result + '%' : ' is not available') + ".<br><br>" + "This information is from UBCGrades API and the UBC Course Info Extension.";
     }
 
   }
@@ -125,7 +125,10 @@ function updateTable(JSONRequest, tableRows, count, isUpdateCall, year) {
 
 }
 const baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
-
+String.prototype.indexOfEnd = function (string) {
+  var io = this.indexOf(string);
+  return io == -1 ? -1 : io + string.length;
+}
 function updateInstructorInfo() {
   //Find element that is the link to professor. Copy the name and use the search query. Scrape rating if possible.
   let list = document.getElementsByClassName('table');
@@ -143,21 +146,25 @@ function updateInstructorInfo() {
     newAElem.id = 'RateMyProfLink';
     newAElem.href = search;
     newAElem.target = '_blank';
-    newAElem.innerHTML = '<b>Search on Rate My Professors!</b>';
+    newAElem.innerHTML = '<b>Search on RateMyProf!</b>';
+    newAElem.style.fontSize = '20px!important';
+
     newAElem.style.paddingLeft = '65px';
     $(newAElem).insertAfter(profLink);
-    // chrome.runtime.sendMessage({
-    //   action: 'getRateMyProf',
-    //   url: search
-    // }, function (responseText) {
-    //   //Do something with the resposne
-    //   // console.log(responseText);
-    //   // var docToParse = new DOMParser().parseFromString(responseText, "text/xml");
-    //   // console.log(docToParse);
-    // });
+    chrome.runtime.sendMessage({
+      action: 'getRateMyProf',
+      url: search
+    }, function (responseText) {
+      
+      // console.log(responseText);
+      let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
+      let teacherGrade = substr.substring(0, substr.indexOf('</div>'));
+      if (newAElem) {
+        newAElem.innerHTML = 'Rating: ' + teacherGrade;
+      }
+    });
   }
 
-  //No professor yet so do nothing
 
 }
 
