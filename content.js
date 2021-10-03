@@ -125,14 +125,15 @@ function updateTable(JSONRequest, tableRows, count, isUpdateCall, year) {
 
 }
 const baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
+
+//From stack overflow: https://stackoverflow.com/questions/18893402/javascript-indexof-from-end-of-search-string
 String.prototype.indexOfEnd = function (string) {
   var io = this.indexOf(string);
   return io == -1 ? -1 : io + string.length;
 }
 function updateInstructorInfo() {
-  //Find element that is the link to professor. Copy the name and use the search query. Scrape rating if possible.
   let list = document.getElementsByClassName('table');
-  let theTable = list[2]; //hard coding is not good...
+  let theTable = list[2];
   let profLink = theTable.querySelectorAll('a');
   if (profLink.length > 0) {
     if (document.getElementById('RateMyProfLink')) {
@@ -146,21 +147,36 @@ function updateInstructorInfo() {
     newAElem.id = 'RateMyProfLink';
     newAElem.href = search;
     newAElem.target = '_blank';
-    newAElem.innerHTML = '<b>Search on RateMyProf!</b>';
-    newAElem.style.fontSize = '20px!important';
+    newAElem.style.fontSize = '130%';
 
     newAElem.style.paddingLeft = '65px';
+
     $(newAElem).insertAfter(profLink);
     chrome.runtime.sendMessage({
       action: 'getRateMyProf',
       url: search
     }, function (responseText) {
-      
-      // console.log(responseText);
+
       let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
-      let teacherGrade = substr.substring(0, substr.indexOf('</div>'));
+      substr = substr.substring(0, substr.indexOf('</div>'));
+      let teacherGrade = substr.substring(substr.length - 3, substr.length);
       if (newAElem) {
-        newAElem.innerHTML = 'Rating: ' + teacherGrade;
+        newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
+        newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
+
+        if (parseFloat(teacherGrade) >= 4.0) {
+          newAElem.style.textDecorationColor = '#88FF88';
+          newAElem.style.color = '#88FF88';
+
+        } else if (parseFloat(teacherGrade) >= 3.0) {
+          newAElem.style.textDecorationColor = '#e5ed00';
+          newAElem.style.color = '#e5ed00';
+
+        } else {
+          newAElem.style.textDecorationColor = '#cc002c';
+          newAElem.style.color = '#cc002c';
+
+        }
       }
     });
   }
