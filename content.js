@@ -161,21 +161,26 @@ function updateInstructorInfo() {
       substr = substr.substring(0, substr.indexOf('</div>'));
       let teacherGrade = substr.substring(substr.length - 3, substr.length);
       if (newAElem) {
-        newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
-        newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
-
-        if (parseFloat(teacherGrade) >= 4.0) {
-          newAElem.style.textDecorationColor = '#88FF88';
-          newAElem.style.color = '#88FF88';
-
-        } else if (parseFloat(teacherGrade) >= 3.0) {
-          newAElem.style.textDecorationColor = '#e5ed00';
-          newAElem.style.color = '#e5ed00';
-
+        console.log(teacherGrade);
+        if (teacherGrade && !teacherGrade.trim()) {
+          newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
         } else {
-          newAElem.style.textDecorationColor = '#cc002c';
-          newAElem.style.color = '#cc002c';
+          newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
+          newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
 
+          if (parseFloat(teacherGrade) >= 4.0) {
+            newAElem.style.textDecorationColor = '#88FF88';
+            newAElem.style.color = '#88FF88';
+
+          } else if (parseFloat(teacherGrade) >= 3.0) {
+            newAElem.style.textDecorationColor = '#e5ed00';
+            newAElem.style.color = '#e5ed00';
+
+          } else {
+            newAElem.style.textDecorationColor = '#cc002c';
+            newAElem.style.color = '#cc002c';
+
+          }
         }
       }
     });
