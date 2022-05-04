@@ -4,8 +4,7 @@
   "version": "0.1",
   "permissions": [
     "tabs",
-    "https://*/",
-    "http://*/"
+    "https://*/"
   ],
   "page_action": {
     "default_title": "Course Info",
