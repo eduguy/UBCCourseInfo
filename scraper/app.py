@@ -13,8 +13,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/rate')
-def index():
-
+def handleGetGrades():
     try:
         fname = request.args.get('firstName').strip();
         lname = request.args.get('lastName').strip();
@@ -27,5 +26,5 @@ def index():
         return 'Not found'
 
 if (__name__ == "__main__"):
-    app.run(debug=true)
+    app.run(port=5001)
 

@@ -157,7 +157,7 @@ function updateInstructorInfo() {
       fname: firstName,
       lname: lastName
     }, function (responseText) {
-
+      //TODO: Add a loading bar
       // console.log(responseText);
       // return;
       // let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
@@ -166,7 +166,7 @@ function updateInstructorInfo() {
       let teacherGrade = responseText;
       if (newAElem) {
         // console.log(teacherGrade);
-        if (teacherGrade && !teacherGrade.trim()) {
+        if (teacherGrade === "Not found") {
           newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
         } else {
           newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
