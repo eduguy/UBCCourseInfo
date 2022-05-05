@@ -13,8 +13,12 @@ Change the session (defaults to 2020W) using the Chrome extension button.
 <img src = "Images/Settings.PNG" width="733" height = "294">
 
 
-### Usage
- - Clone the files and upload the manifest into your Chrome browser or [download it from the Chrome App Store]() (Work in progress)!\
+### General Usage
+
+ - Clone the files and upload whole folder into your Chromium-based browser or [download it from the Chrome App Store]() (Work in progress)!
+
+### Setting up your own environment:
+
  - As of 2022, there are changes to the RateMyProf website such that the ratings are not served up statically. To get ratings, you need to install all dependencies and run the web scraper API in /scraper with `flask start`
 
 Dependencies to install:
