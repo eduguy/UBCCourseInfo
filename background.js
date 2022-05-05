@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     };
     xhttp.onerror = function () {
     };
-    xhttp.open('GET', request.url);
+    xhttp.open('GET', "http://localhost:5000/rate?firstName="+request.fname+"&lastName="+request.lname);
     xhttp.send();
     return true;
 
