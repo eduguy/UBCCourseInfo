@@ -1,6 +1,7 @@
 # UBC Vancouver Course Info Chrome Extension
 
 A Chrome extension that adds previous year course averages and current session average professor ratings (see usage for caveats) to the course selection screen on UBC's website to help students pick courses.
+
 <br>
 
 <img src = "Images/CourseView.PNG" width="602" height = "449">
