@@ -154,14 +154,18 @@ function updateInstructorInfo() {
     $(newAElem).insertAfter(profLink);
     chrome.runtime.sendMessage({
       action: 'getRateMyProf',
-      url: search
+      fname: firstName,
+      lname: lastName
     }, function (responseText) {
 
-      let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
-      substr = substr.substring(0, substr.indexOf('</div>'));
-      let teacherGrade = substr.substring(substr.length - 3, substr.length);
+      // console.log(responseText);
+      // return;
+      // let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
+      // substr = substr.substring(0, substr.indexOf('</div>'));
+      // let teacherGrade = substr.substring(substr.length - 3, substr.length);
+      let teacherGrade = responseText;
       if (newAElem) {
-        console.log(teacherGrade);
+        // console.log(teacherGrade);
         if (teacherGrade && !teacherGrade.trim()) {
           newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
         } else {
