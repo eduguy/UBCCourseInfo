@@ -133,7 +133,8 @@ String.prototype.indexOfEnd = function (string) {
 }
 function updateInstructorInfo() {
   let list = document.getElementsByClassName('table');
-  let theTable = list[2];
+  let filtered = Array.from(list).filter( (elem) => elem.className === "table");
+  let theTable = filtered[0];
   let profLink = theTable.querySelectorAll('a');
   if (profLink.length > 0) {
     if (document.getElementById('RateMyProfLink')) {
@@ -152,14 +153,13 @@ function updateInstructorInfo() {
     newAElem.style.paddingLeft = '65px';
     newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
 
-    $(newAElem).insertAfter(profLink);
+    $(newAElem).insertAfter(profLink[0]);
     chrome.runtime.sendMessage({
       action: 'getRateMyProf',
       fname: firstName,
       lname: lastName
     }, function (responseText) {
       let teacherGrade = responseText;
-      document.getElementById("RateMyProfLink").remove();
       if (newAElem) {
         if (teacherGrade === "Not found") {
           newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
