@@ -14,7 +14,6 @@ CORS(app)
 
 @app.route('/rate')
 def handleGetGrades():
-    driver
     try:
         fname = request.args.get('firstName').strip();
         lname = request.args.get('lastName').strip();
