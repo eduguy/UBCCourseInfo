@@ -38,8 +38,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     };
     xhttp.onerror = function () {
     };
-    xhttp.open('GET', "http://54.193.122.205/rate?firstName="+request.fname+"&lastName="+request.lname);
+    xhttp.open('GET', "http://54.193.122.205/rate?firstName=" + request.fname + "&lastName=" + request.lname);
     xhttp.send();
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      let activeTab = tabs[0];
+      chrome.tabs.sendMessage(activeTab.id, { "message": "Loading ratings" });
+    });
     return true;
 
   }
@@ -57,11 +61,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     chrome.pageAction.show(sender.tab.id);
   }
 });
-
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   if (request.message === "Year Value Changed") {
-//     let newVal = request.value;
-//     updateInfo(newVal);
-//   }
-// });
-
