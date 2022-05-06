@@ -147,9 +147,10 @@ function updateInstructorInfo() {
     newAElem.id = 'RateMyProfLink';
     newAElem.href = search;
     newAElem.target = '_blank';
-    newAElem.style.fontSize = '130%';
+    newAElem.style.fontSize = '175%';
 
     newAElem.style.paddingLeft = '65px';
+    newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
 
     $(newAElem).insertAfter(profLink);
     chrome.runtime.sendMessage({
@@ -157,20 +158,13 @@ function updateInstructorInfo() {
       fname: firstName,
       lname: lastName
     }, function (responseText) {
-      //TODO: Add a loading bar
-      // console.log(responseText);
-      // return;
-      // let substr = responseText.substring(responseText.indexOfEnd('QUALITY</div>'));
-      // substr = substr.substring(0, substr.indexOf('</div>'));
-      // let teacherGrade = substr.substring(substr.length - 3, substr.length);
       let teacherGrade = responseText;
+      document.getElementById("RateMyProfLink").remove();
       if (newAElem) {
-        // console.log(teacherGrade);
         if (teacherGrade === "Not found") {
           newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
         } else {
           newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
-          newAElem.style.textShadow = '1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000';
 
           if (parseFloat(teacherGrade) >= 4.0) {
             newAElem.style.textDecorationColor = '#88FF88';
@@ -189,7 +183,14 @@ function updateInstructorInfo() {
       }
     });
   }
-
-
 }
 
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    if (request.message === "Loading ratings") {
+      let aElem = document.getElementById("RateMyProfLink");
+      aElem.innerHTML = "Professor ratings are loading..."
+      aElem.style.color = "e5ed00!important";
+      aElem.style.textDecorationColor = '#e5ed00!important';
+    }
+  });

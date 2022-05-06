@@ -14,16 +14,20 @@ CORS(app)
 
 @app.route('/rate')
 def handleGetGrades():
+    driver
     try:
         fname = request.args.get('firstName').strip();
         lname = request.args.get('lastName').strip();
         url = 'https://www.ratemyprofessors.com/search/teachers?query=' + fname + '%20' + lname + '&sid=U2Nob29sLTE0MTM='
         driver.get(url)
-        elem = driver.find_element_by_xpath("//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[3]/a/div/div[1]/div/div[2]")
-        ret = elem.get_attribute('innerHTML')
-        return ret
-    except:
+        test = driver.find_element_by_xpath("//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[1]/div/div/div")
         return 'Not found'
+    except:
+        try:
+            elem = driver.find_element_by_xpath("//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[3]/a/div/div[1]/div/div[2]")
+            return elem.get_attribute('innerHTML')
+        except:
+            return 'Not found'
 
 if (__name__ == "__main__"):
     app.run(port=5001)
