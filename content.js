@@ -182,6 +182,8 @@ function updateInstructorInfo() {
         }
       }
     });
+    return true;
+
   }
 }
 
