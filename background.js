@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       let activeTab = tabs[0];
       chrome.tabs.sendMessage(activeTab.id, { "message": "Loading ratings" });
     });
-    fetch("http://54.193.122.205//rate?firstName=" + request.fname + "&lastName=" + request.lname + "")
+    fetch("http://54.193.122.205/rate?firstName=" + request.fname + "&lastName=" + request.lname + "")
       .then(function (response) {
         response.text()
           .then((res) => {
@@ -42,15 +42,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   }
 });
 
-// chrome.pageAction.onClicked.addListener(function () {
-//   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     let activeTab = tabs[0];
-//     chrome.tabs.sendMessage(activeTab.id, { "message": "Popup Opened" });
-//   });
-// });
+chrome.action.onClicked.addListener(function () {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    let activeTab = tabs[0];
+    chrome.tabs.sendMessage(activeTab.id, { "message": "Popup Opened" });
+    return true;
+  });
+});
 
-// chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-//   if (message.type === 'showPageAction') {
-//     chrome.pageAction.show(sender.tab.id);
-//   }
-// });
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.type === 'showPageAction') {
+    chrome.pageAction.show(sender.tab.id);
+    return true;
+  }
+});

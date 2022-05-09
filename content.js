@@ -126,11 +126,6 @@ function updateTable(JSONRequest, tableRows, count, isUpdateCall, year) {
 }
 const baseSearchQuery = 'https://www.ratemyprofessors.com/search/teachers?query=FIRSTNAME%20LASTNAME&sid=U2Nob29sLTE0MTM='
 
-//From stack overflow: https://stackoverflow.com/questions/18893402/javascript-indexof-from-end-of-search-string
-String.prototype.indexOfEnd = function (string) {
-  var io = this.indexOf(string);
-  return io == -1 ? -1 : io + string.length;
-}
 function updateInstructorInfo() {
   let list = document.getElementsByClassName('table');
   let filtered = Array.from(list).filter( (elem) => elem.className === "table");
@@ -194,5 +189,6 @@ chrome.runtime.onMessage.addListener(
       aElem.innerHTML = "Professor ratings are loading..."
       aElem.style.color = "e5ed00!important";
       aElem.style.textDecorationColor = '#e5ed00!important';
+      return true;
     }
   });

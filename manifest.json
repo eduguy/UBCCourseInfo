@@ -8,6 +8,10 @@
   "host_permissions":[
     "https://*/"
   ],
+  "action": {
+    "default_title": "Course Info",
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": [
