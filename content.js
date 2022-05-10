@@ -39,7 +39,6 @@ function updateCourseInfo(year, isUpdateCall) {
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.message === "Navigated") {
-      chrome.runtime.sendMessage({ type: 'showPageAction' });
       let curLocation = window.location.href;
       if (curLocation.includes("dept=") && curLocation.includes("course=")) {
         //Default to 2020W since at this time that is the latest
