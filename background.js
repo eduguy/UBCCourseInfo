@@ -10,54 +10,42 @@ chrome.tabs.onUpdated.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   if (request.action == "xhttp") {
-    let xhttp = new XMLHttpRequest();
-    xhttp.onload = function () {
-      if (xhttp.status != 404) {
-        callback(xhttp.responseText);
-      } else {
-        callback('ERROR');
-      }
-    };
-    xhttp.onerror = function () {
-    };
-    xhttp.open('GET', request.url);
-    xhttp.send();
+    fetch(request.url)
+      .then(function (response) {
+        response.text()
+          .then((res) => {
+            callback(res);
+          });
+      })
     return true;
   }
 }
 );
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   if (request.action == 'getRateMyProf') {
-    let xhttp = new XMLHttpRequest();
-    xhttp.onload = function () {
-      if (xhttp.status != 404) {
-        callback(xhttp.responseText);
-      } else {
-        callback('ERROR');
-      }
-    };
-    xhttp.onerror = function () {
-    };
-    xhttp.open('GET', "http://54.193.122.205/rate?firstName=" + request.fname + "&lastName=" + request.lname);
-    xhttp.send();
+
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       let activeTab = tabs[0];
       chrome.tabs.sendMessage(activeTab.id, { "message": "Loading ratings" });
     });
-    return true;
+    fetch("http://54.193.122.205/rate?firstName=" + request.fname + "&lastName=" + request.lname + "")
+      .then(function (response) {
+        response.text()
+          .then((res) => {
+            callback(res);
+          });
 
+      }).catch(function (error) {
+        callback('ERROR');
+      });
+    return true;
   }
 });
 
-chrome.pageAction.onClicked.addListener(function () {
+chrome.action.onClicked.addListener(function () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     let activeTab = tabs[0];
     chrome.tabs.sendMessage(activeTab.id, { "message": "Popup Opened" });
+    return true;
   });
-});
-
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.type === 'showPageAction') {
-    chrome.pageAction.show(sender.tab.id);
-  }
 });
