@@ -15,7 +15,7 @@ Change the session (defaults to 2020W) using the Chrome extension button.
 
 ### General Usage
 
- - Clone the files and upload whole folder into your Chromium-based browser or [download it from the Chrome App Store]() (Work in progress)!
+ - Clone the files and upload whole folder into your Chromium-based browser or [download it from the Chrome App Store](https://chrome.google.com/webstore/detail/course-info/aopmgfpchahgejjdcddfmonhnogcignk).
 
 ### Setting up your own environment:
 
