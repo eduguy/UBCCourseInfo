@@ -34,8 +34,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
           .then((res) => {
             callback(res);
           });
-
-      }).catch(function (error) {
+      })
+      .catch(function (error) {
         callback('ERROR');
       });
     return true;

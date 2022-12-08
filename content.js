@@ -155,7 +155,7 @@ function updateInstructorInfo() {
     }, function (responseText) {
       let teacherGrade = responseText;
       if (newAElem) {
-        if (teacherGrade === "Not found") {
+        if (teacherGrade === "0") {
           newAElem.innerHTML = "Rating wasn't found. Click here to go to the RateMyProfessors page.";
         } else {
           newAElem.innerHTML = 'Rating: ' + teacherGrade + ". Click here to go to the RateMyProfessors page.";
